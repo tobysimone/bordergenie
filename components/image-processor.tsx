@@ -2,13 +2,9 @@
 
 import type React from "react"
 
-import { useState, useRef, useCallback, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Slider } from "@/components/ui/slider"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Card, CardContent } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { Upload, Download, Trash2, ChevronDown, AlertCircle, Lock } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -17,8 +13,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { toast } from "@/components/ui/use-toast"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Slider } from "@/components/ui/slider"
 import { Toaster } from "@/components/ui/toaster"
+import { toast } from "@/components/ui/use-toast"
+import { AlertCircle, ChevronDown, Download, Lock, Trash2, Upload } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 interface ProcessedImage {
   id: string
@@ -245,7 +245,7 @@ export default function ImageProcessor() {
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-2 gap-4">
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="flex flex-col h-full p-6">
                 <h3 className="mb-2 text-lg font-bold">Monthly</h3>
                 <p className="mb-4 text-3xl font-bold">
                   $4.99<span className="text-sm font-normal">/month</span>
@@ -255,6 +255,7 @@ export default function ImageProcessor() {
                   <li className="flex items-center gap-2">✓ Premium borders</li>
                   <li className="flex items-center gap-2">✓ Batch processing</li>
                 </ul>
+                <div className="flex-grow"></div>
                 <Button
                   className="w-full bg-[#FF7F50] hover:bg-[#FF6347]"
                   onClick={() => {
@@ -270,7 +271,7 @@ export default function ImageProcessor() {
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-6">
+              <CardContent className="flex flex-col h-full p-6">
                 <h3 className="mb-2 text-lg font-bold">Lifetime</h3>
                 <p className="mb-4 text-3xl font-bold">$49.99</p>
                 <ul className="mb-6 space-y-2">
@@ -279,6 +280,7 @@ export default function ImageProcessor() {
                   <li className="flex items-center gap-2">✓ Batch processing</li>
                   <li className="flex items-center gap-2">✓ One-time payment</li>
                 </ul>
+                <div className="flex-grow"></div>
                 <Button
                   className="w-full bg-[#FF7F50] hover:bg-[#FF6347]"
                   onClick={() => {
@@ -301,8 +303,7 @@ export default function ImageProcessor() {
 
   return (
     <div className="py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Image Processor</h2>
+      <div className="flex items-center justify-end mb-6">
         <div className="flex gap-4">
           {!isPro && upgradeToProDialog}
           {images.length > 0 && (
