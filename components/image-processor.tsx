@@ -17,7 +17,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Slider } from "@/components/ui/slider"
 import { Toaster } from "@/components/ui/toaster"
 import { toast } from "@/components/ui/use-toast"
-import { AlertCircle, ChevronDown, Download, Lock, Trash2, Upload } from "lucide-react"
+import { AlertCircle, ChevronDown, Download, Lock, RotateCw, Trash2, Upload } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 interface ProcessedImage {
@@ -28,6 +28,7 @@ interface ProcessedImage {
   aspectRatio: string
   width: number
   height: number
+  rotation: number
 }
 
 type AspectRatio = "1:1" | "4:5" | "16:9" | "custom"
@@ -76,6 +77,7 @@ export default function ImageProcessor() {
                 aspectRatio,
                 width: img.width,
                 height: img.height,
+                rotation: 0
               },
             ])
           }
@@ -110,6 +112,21 @@ export default function ImageProcessor() {
     setImages((prev) => prev.filter((img) => img.id !== id))
   }
 
+  const rotateImage = (id: string) => {
+    setImages((prev) => {
+      const updatedImages = prev.map((img) => {
+        if (img.id === id) {
+          return {
+            ...img,
+            rotation: (img.rotation + 90) % 360
+          }
+        }
+        return img
+      })
+      return updatedImages
+    })
+  }
+
   const getAspectRatioDimensions = (aspectRatio: AspectRatio, originalWidth: number, originalHeight: number) => {
     switch (aspectRatio) {
       case "1:1":
@@ -130,7 +147,7 @@ export default function ImageProcessor() {
   }
 
   // Draw image on canvas with border
-  const drawImageOnCanvas = (canvas: HTMLCanvasElement, image: ProcessedImage) => {
+  const drawImageOnCanvas = (canvas: HTMLCanvasElement, image: ProcessedImage, rotation: number = 0) => {
     if (!canvas) return
 
     const ctx = canvas.getContext("2d")
@@ -173,8 +190,16 @@ export default function ImageProcessor() {
       offsetY = borderWidth
     }
 
+    // Apply rotation
+    ctx.save(); // Save the current state
+    ctx.translate(canvasWidth / 2, canvasHeight / 2); // Move the origin to the center of the canvas
+    ctx.rotate((rotation * Math.PI) / 180); // Rotate the canvas
+    ctx.translate(-canvasWidth / 2, -canvasHeight / 2); // Move the origin back
+
     // Draw the image
     ctx.drawImage(image.originalImage, offsetX, offsetY, drawWidth, drawHeight)
+
+    ctx.restore();
   }
 
   // Update canvases when settings change
@@ -182,7 +207,7 @@ export default function ImageProcessor() {
     images.forEach((image) => {
       const canvas = canvasRefs.current.get(image.id)
       if (canvas) {
-        drawImageOnCanvas(canvas, image)
+        drawImageOnCanvas(canvas, image, image.rotation)
       }
     })
   }, [images, borderColor, borderWidth, aspectRatio])
@@ -195,7 +220,7 @@ export default function ImageProcessor() {
       // Find the image and draw it
       const image = images.find((img) => img.id === id)
       if (image) {
-        drawImageOnCanvas(canvas, image)
+        drawImageOnCanvas(canvas, image, image.rotation)
       }
     }
   }
@@ -404,13 +429,6 @@ export default function ImageProcessor() {
                       <DropdownMenuItem onClick={() => handleAspectRatioChange("16:9")}>
                         Landscape (16:9)
                       </DropdownMenuItem>
-                      {isPro ? (
-                        <DropdownMenuItem onClick={() => handleAspectRatioChange("custom")}>Custom</DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem className="flex items-center gap-2 opacity-50 cursor-not-allowed">
-                          <Lock size={14} /> Custom (Pro only)
-                        </DropdownMenuItem>
-                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -425,15 +443,23 @@ export default function ImageProcessor() {
                 {images.map((image) => (
                   <CarouselItem key={image.id} className="md:basis-1/2 lg:basis-1/3">
                     <div className="p-1">
-                      <Card>
-                        <CardContent className="relative p-0">
+                      <Card className="bg-slate-50">
+                        <CardContent className="relative p-5">
                           <div className="relative overflow-hidden aspect-square">
                             <canvas
                               ref={(canvas) => setCanvasRef(image.id, canvas)}
-                              className="object-contain w-full h-full"
+                              className="object-contain w-full h-full p-5"
                             />
                           </div>
                           <div className="absolute flex gap-2 top-2 right-2">
+                          <Button
+                              size="icon"
+                              variant="ghost"
+                              className="w-8 h-8 rounded-full"
+                              onClick={() => rotateImage(image.id)}
+                            >
+                              <RotateCw size={14} />
+                            </Button>
                             <Button
                               size="icon"
                               variant="destructive"
