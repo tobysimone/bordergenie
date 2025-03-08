@@ -305,7 +305,7 @@ export default function ImageProcessor() {
     <div className="py-8">
       <div className="flex items-center justify-end mb-6">
         <div className="flex gap-4">
-          {!isPro && upgradeToProDialog}
+          {/* {!isPro && upgradeToProDialog} */}
           {images.length > 0 && (
             <Button variant="outline" onClick={downloadAll} className="flex items-center gap-2">
               <Download size={16} />
@@ -333,12 +333,12 @@ export default function ImageProcessor() {
           <Upload size={48} className="mb-4 text-slate-400" />
           <h3 className="mb-2 text-xl font-semibold">Drop Your Files Here</h3>
           <p className="mb-4 text-slate-500">or click to select files from your device</p>
-          {!isPro && (
+          {/* {!isPro && (
             <div className="flex items-center gap-2 px-4 py-2 rounded-md text-amber-600 bg-amber-50">
               <AlertCircle size={16} />
               <span>Free plan: Maximum 2 images at a time</span>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 

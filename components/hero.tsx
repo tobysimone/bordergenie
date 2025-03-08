@@ -14,14 +14,14 @@ export default function Hero() {
         required, instant processing, and you can customize your borders exactly how you want them.
       </p>
 
-      <div className="flex flex-col justify-center gap-4 mt-8 sm:flex-row">
+      {/* <div className="flex flex-col justify-center gap-4 mt-8 sm:flex-row">
         <Button size="lg" className="bg-[#FF7F50] hover:bg-[#FF6347]">
           Get Started
         </Button>
         <Button size="lg" variant="outline" className="border-[#FF7F50] text-[#FF7F50] hover:bg-[#FFF5F2]">
           Upgrade to Pro
         </Button>
-      </div>
+      </div> */}
     </div>
   )
 }
